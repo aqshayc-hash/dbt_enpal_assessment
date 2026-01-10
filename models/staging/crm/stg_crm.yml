@@ -1,0 +1,14 @@
+version: 2
+
+models:
+  - name: stg_crm__deal_changes
+    columns:
+      - name: change_id
+        tests: [unique, not_null]
+      - name: deal_id
+        tests: [not_null]
+      - name: field_key
+        tests: 
+          - accepted_values:
+              arguments:
+                values: ['stage_id', 'user_id', 'add_time', 'lost_reason']

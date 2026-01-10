@@ -1,0 +1,25 @@
+version: 2
+
+sources:
+  - name: crm
+    description: "Raw Pipedrive export data"
+    database: postgres  # Adjust based on actual DB
+    schema: public
+    loader: "Custom Shell Script"
+    freshness:
+      warn_after: {count: 24, period: hour}
+      error_after: {count: 48, period: hour}
+    tables:
+      - name: deal_changes
+        loaded_at_field: change_time
+        description: "History of changes to deals (EAV format)"
+      - name: stages
+        description: "Lookup table for pipeline stages"
+      - name: fields
+        description: "Metadata decoding for field keys (e.g., lost reasons)"
+      - name: activity
+        description: "Sales activities (calls, meetings, etc.)"
+      - name: activity_types
+        description: "Lookup table for activity types"
+      - name: users
+        description: "Sales reps / users"
