@@ -6,12 +6,12 @@ sources:
     database: postgres  # Adjust based on actual DB
     schema: public
     loader: "Custom Shell Script"
-    freshness:
-      warn_after: {count: 24, period: hour}
-      error_after: {count: 48, period: hour}
     tables:
       - name: deal_changes
         loaded_at_field: change_time
+        freshness:
+          warn_after: {count: 24, period: hour}
+          error_after: {count: 48, period: hour}
         description: "History of changes to deals (EAV format)"
       - name: stages
         description: "Lookup table for pipeline stages"
