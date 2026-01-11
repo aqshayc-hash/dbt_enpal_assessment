@@ -1,4 +1,7 @@
-{{ config(materialized='table') }}
+{{ config(
+    materialized='incremental',
+    unique_key=['month', 'kpi_name', 'funnel_step']
+) }}
 
 with stage_events as (
     select 
@@ -7,6 +10,9 @@ with stage_events as (
         funnel_step_number, 
         kpi_name 
     from {{ ref('int_deal_stage_history') }}
+    {% if is_incremental() %}
+    where valid_from >= (select to_date(max(month), 'YYYY-MM') from {{ this }})
+    {% endif %}
 ),
 
 activity_events as (
@@ -16,6 +22,9 @@ activity_events as (
         funnel_step_number, 
         kpi_name 
     from {{ ref('int_deal_activities') }}
+    {% if is_incremental() %}
+    where valid_from >= (select to_date(max(month), 'YYYY-MM') from {{ this }})
+    {% endif %}
 ),
 
 -- Combine both streams
