@@ -25,3 +25,16 @@ models:
               arguments:
                 to: source('crm', 'users')
                 field: id
+
+  - name: stg_crm__users
+    description: "Staging model for CRM users/reps"
+    columns:
+      - name: user_id
+        description: "Primary key"
+        tests:
+          - unique
+          - not_null
+      - name: email
+        tests:
+          - unique
+          - not_null

@@ -1,55 +1,42 @@
-{{ config(
-    materialized='incremental',
-    unique_key=['month', 'kpi_name', 'funnel_step']
-) }}
+{{ config(materialized='table') }}
 
-with stage_events as (
+with stage_facts as (
     select 
-        deal_id, 
-        valid_from, 
-        funnel_step_number, 
-        kpi_name 
-    from {{ ref('int_deal_stage_history') }}
-    {% if is_incremental() %}
-    where valid_from >= (select to_date(max(month), 'YYYY-MM') from {{ this }})
-    {% endif %}
+        deal_id,
+        valid_from,
+        stage_name as kpi_name,
+        funnel_step_number as funnel_step
+    from {{ ref('fct_crm__deal_history') }}
 ),
 
-activity_events as (
+activity_facts as (
     select 
-        deal_id, 
-        valid_from, 
-        funnel_step_number, 
-        kpi_name 
-    from {{ ref('int_deal_activities') }}
-    {% if is_incremental() %}
-    where valid_from >= (select to_date(max(month), 'YYYY-MM') from {{ this }})
-    {% endif %}
-),
-
--- Combine both streams
-all_events as (
-    select * from stage_events
-    union all
-    select * from activity_events
-),
-
--- Aggregate
-monthly_stats as (
-    select
-        -- Robust Date Truncation
-        date_trunc('month', valid_from) as report_month,
+        deal_id,
+        activity_at as valid_from,
         kpi_name,
-        cast(funnel_step_number as numeric) as funnel_step,
-        count(distinct deal_id) as deals_count
-    from all_events
-    group by 1, 2, 3
+        -- Report-specific Mapping: Activities
+        case activity_type
+            when 'meeting' then 2.1
+            when 'sc_2' then 3.1
+            else null -- Filter out irrelevant activities for THIS report
+        end as funnel_step
+    from {{ ref('fct_crm__activities') }}
+    where is_done = true
+),
+
+unioned as (
+    select * from stage_facts
+    union all
+    select * from activity_facts
 )
 
-select 
-    to_char(report_month, 'YYYY-MM') as month,
+select
+    -- Final Presentation Layer
+    to_char(date_trunc('month', valid_from), 'YYYY-MM') as month,
     kpi_name,
     funnel_step,
-    deals_count
-from monthly_stats
-order by report_month desc, funnel_step asc
+    count(distinct deal_id) as deals_count
+from unioned
+where funnel_step is not null -- Clean out non-funnel activities
+group by 1, 2, 3
+order by 1 desc, 3 asc
