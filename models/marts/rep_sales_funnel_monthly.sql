@@ -31,7 +31,7 @@ monthly_stats as (
         -- Robust Date Truncation
         date_trunc('month', valid_from) as report_month,
         kpi_name,
-        funnel_step_number as funnel_step,
+        cast(funnel_step_number as numeric) as funnel_step,
         count(distinct deal_id) as deals_count
     from all_events
     group by 1, 2, 3

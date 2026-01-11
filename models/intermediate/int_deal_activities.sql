@@ -9,8 +9,8 @@ mapped as (
         
         -- Map Activity Type to Funnel Step
         case activity_type
-            when 'meeting' then 3
-            when 'sc_2' then 5
+            when 'meeting' then 2.1
+            when 'sc_2' then 3.1
         end as funnel_step_number,
 
         case activity_type

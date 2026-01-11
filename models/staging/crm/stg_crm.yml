@@ -12,3 +12,16 @@ models:
           - accepted_values:
               arguments:
                 values: ['stage_id', 'user_id', 'add_time', 'lost_reason']
+
+  - name: stg_crm__activities
+    columns:
+      - name: deal_id
+        tests:
+          - not_null
+          # Note: We can't test relationship to deals table as it is not provided in sources
+      - name: user_id
+        tests:
+          - relationships:
+              arguments:
+                to: source('crm', 'users')
+                field: id
