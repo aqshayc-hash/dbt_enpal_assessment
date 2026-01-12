@@ -16,9 +16,9 @@ sources:
       - name: stages
         description: "Lookup table for pipeline stages"
       - name: fields
-        description: "Metadata decoding for field keys (e.g., lost reasons)"
+        description: "Metadata decoding for field keys"
       - name: activity
-        description: "Sales activities (calls, meetings, etc.)"
+        description: "Sales activities logged against deals"
       - name: activity_types
         description: "Lookup table for activity types"
       - name: users

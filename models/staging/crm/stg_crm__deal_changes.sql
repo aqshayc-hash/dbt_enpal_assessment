@@ -2,7 +2,7 @@ with source as (
     select * from {{ source('crm', 'deal_changes') }}
 ),
 
-renamed as (
+deal_changes_renamed as (
     select
         -- Create a surrogate key because raw table has no PK
         {{ dbt_utils.generate_surrogate_key(['deal_id', 'change_time', 'changed_field_key', 'new_value']) }} as change_id,
@@ -13,4 +13,4 @@ renamed as (
     from source
 )
 
-select * from renamed
+select * from deal_changes_renamed

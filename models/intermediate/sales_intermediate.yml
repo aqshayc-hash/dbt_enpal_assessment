@@ -1,0 +1,44 @@
+version: 2
+
+models:
+  - name: int_deal_stage_history
+    description: "Reconstructs deal stage timeline from EAV format with point-in-time ownership tracking. Each row represents a deal entering a funnel stage, attributed to the rep who owned it at that moment."
+    columns:
+      - name: deal_id
+        description: "Deal identifier"
+        tests: [not_null]
+      - name: valid_from
+        description: "Timestamp when the deal entered this stage"
+        tests: [not_null]
+      - name: rep_name
+        description: "Sales rep who owned the deal at the time of this stage event"
+      - name: funnel_step_number
+        description: "Numeric funnel step (1.0-9.0)"
+        tests: [not_null]
+      - name: kpi_name
+        description: "Readable stage name (e.g., 'Lead Generation', 'Qualified Lead')"
+        tests: [not_null]
+
+  - name: int_deal_activities
+    description: "Enriched activities joined with activity types and users. Provides reusable activity data for multiple downstream reports without filtering."
+    columns:
+      - name: activity_id
+        description: "Activity identifier (note: not unique in source data)"
+        tests: [not_null]
+      - name: deal_id
+        description: "Associated deal"
+        tests: [not_null]
+      - name: activity_at
+        description: "When the activity occurred/is due"
+      - name: is_done
+        description: "Whether the activity was completed"
+      - name: user_id
+        description: "User assigned to the activity"
+      - name: rep_name
+        description: "Name of the assigned sales rep"
+      - name: activity_type_name
+        description: "Human-readable activity type (e.g., 'Sales Call 2')"
+      - name: activity_type_key
+        description: "Raw activity type code from source (e.g., 'sc_2')"
+      - name: funnel_mapping_category
+        description: "Categorization for funnel reporting"

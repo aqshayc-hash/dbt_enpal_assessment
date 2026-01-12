@@ -49,10 +49,8 @@ final as (
     select
         e.deal_id,
         e.valid_from,
-        
         -- Find the user who owned the deal at the time of the event
         u.user_name as rep_name,
-
         -- Funnel Mapping
         case e.stage_id
             when 1 then 1.0  -- Lead Gen

@@ -24,7 +24,7 @@ activity_facts as (
     where is_done = true
 ),
 
-unioned as (
+union_facts as (
     select * from stage_facts
     union all
     select * from activity_facts
@@ -36,7 +36,7 @@ select
     kpi_name,
     funnel_step,
     count(distinct deal_id) as deals_count
-from unioned
+from union_facts
 where funnel_step is not null -- Clean out non-funnel activities
 group by 1, 2, 3
 order by 1 desc, 3 asc
