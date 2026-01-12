@@ -1,20 +1,20 @@
-version: '3.8'
-
 services:
   db:
     image: postgres:latest
+    container_name: enpal_postgres
     environment:
       POSTGRES_DB: postgres
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-      - ./raw_data:/raw_data  # Mount raw_data folder to access CSV files
+      - ./raw_data:/raw_data
     ports:
       - "5432:5432"
 
   data_loader:
     image: postgres:latest
+    container_name: enpal_data_loader
     depends_on:
       - db
     volumes:
@@ -22,5 +22,3 @@ services:
     entrypoint: /bin/bash /raw_data/load_data.sh
     environment:
       PGPASSWORD: admin
-    links:
-      - db

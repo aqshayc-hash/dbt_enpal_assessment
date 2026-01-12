@@ -26,11 +26,22 @@ clean-targets:         # directories to be removed by `dbt clean`
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
 
-# In this example config, we tell dbt to build all models in the example/
-# directory as views. These settings can be overridden in the individual model
-# files using the `{{ config(...) }}` macro.
 models:
   enpal_assessment_project:
-    # Config indicated by + and applies to all files under models/example/
+    # Default config for all models
     +schema: pipedrive_analytics
-    +materialized: table
+    
+    # Staging layer: lightweight views for data cleaning
+    staging:
+      +materialized: view
+      +tags: ['staging']
+    
+    # Intermediate layer: reusable business logic as views
+    intermediate:
+      +materialized: view
+      +tags: ['intermediate']
+    
+    # Marts layer: final tables optimized for querying
+    marts:
+      +materialized: table
+      +tags: ['marts']
