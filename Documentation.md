@@ -1316,18 +1316,7 @@ pipedrive_analytics
 
 ### Testing Recommendations
 
-#### Data Quality Tests
 
-Run defined tests:
-```bash
-dbt test
-```
-
-Tests include:
-- Uniqueness checks (e.g., `change_id`, `user_id`)
-- Not null checks (e.g., `deal_id`, `month`)
-- Relationship checks (e.g., `user_id` → `users.id`)
-- Accepted values (e.g., `field_key` values)
 
 #### Custom Validation Queries
 
@@ -1350,33 +1339,11 @@ FROM pipedrive_analytics.rep_sales_funnel_monthly
 GROUP BY month
 ORDER BY month DESC;
 ```
-
-### Maintenance
-
-#### Regular Operations
-
-- **Daily/Weekly**: Run `dbt run` to process new data (incremental models)
-- **As Needed**: Run `dbt test` to validate data quality
-- **Monthly**: Review `rep_sales_funnel_monthly` for business insights
-
-#### Model Updates
-
-- **Staging Layer**: Update when source schema changes
-- **Intermediate Layer**: Update when business logic changes
-- **Marts Layer**: Update when reporting requirements change
-
-#### Performance Optimization
-
-- Monitor incremental model performance
-- Consider partitioning for large fact tables
-- Review query performance on reporting models
-- Optimize window functions if data volume grows significantly
-
 ---
 
 ## Conclusion
 
-This documentation provides a comprehensive overview of the Pipedrive CRM data pipeline, from raw CSV files to final reporting models. The architecture follows dbt best practices with clear separation of concerns across staging, intermediate, and marts layers.
+This documentation provides a comprehensive overview of the Pipedrive CRM data pipeline, from raw CSV files to final reporting models. The architecture follows dbt with clear separation of concerns across staging, intermediate, and marts layers.
 
 Key strengths of this implementation:
 - **Maintainability**: Clear layer separation and naming conventions
