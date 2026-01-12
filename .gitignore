@@ -24,3 +24,6 @@ dbt_packages/
 
 # User-specific dbt settings
 .user.yml
+
+# Results folder (CSV exports)
+results/
