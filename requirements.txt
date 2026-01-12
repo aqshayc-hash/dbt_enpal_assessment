@@ -1,0 +1,3 @@
+# dbt Core and PostgreSQL adapter
+dbt-core>=1.10.0
+dbt-postgres>=1.10.0
