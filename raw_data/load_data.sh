@@ -1,8 +1,15 @@
 #!/bin/bash
 
-# Wait until PostgreSQL is ready
+# Wait until PostgreSQL is ready (with timeout)
+MAX_RETRIES=30
+RETRY_COUNT=0
 until pg_isready -h db -U admin; do
-  echo "Waiting for database connection..."
+  RETRY_COUNT=$((RETRY_COUNT + 1))
+  if [ $RETRY_COUNT -ge $MAX_RETRIES ]; then
+    echo "ERROR: Database connection timeout after $MAX_RETRIES attempts"
+    exit 1
+  fi
+  echo "Waiting for database connection... (attempt $RETRY_COUNT/$MAX_RETRIES)"
   sleep 2
 done
 
